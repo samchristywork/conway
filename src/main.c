@@ -25,9 +25,32 @@ struct World {
 };
 
 bool world_init(struct World *world, struct Vec2i dimensions) {
+  world->_dimensions.x = dimensions.x;
+  world->_dimensions.y = dimensions.y;
+
+  world->grid =
+      (struct Square **)malloc(sizeof(struct Square *) * dimensions.y);
+  if (!world->grid) {
+    return false;
+  }
+
+  for (int y = 0; y < dimensions.y; y++) {
+    world->grid[y] =
+        (struct Square *)malloc(sizeof(struct Square) * dimensions.x);
+    if (!world->grid[y]) {
+      return false;
+    }
+
+    for (int x = 0; x < dimensions.x; x++) {
+      world->grid[y][x].value = CELL_DEAD;
+    }
+  }
+
+  return true;
 }
 
 struct Vec2i world_get_dimensions(struct World *world) {
+  return world->_dimensions;
 }
 
 struct Square world_get_square(struct World *world, int x, int y) {
