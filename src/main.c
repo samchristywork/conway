@@ -54,12 +54,38 @@ struct Vec2i world_get_dimensions(struct World *world) {
 }
 
 struct Square world_get_square(struct World *world, int x, int y) {
+  struct Vec2i dimensions = world_get_dimensions(world);
+
+  struct Square empty;
+  empty.value = CELL_DEAD;
+
+  if (x < 0 || x >= dimensions.x) {
+    return empty;
+  }
+
+  if (y < 0 || y >= dimensions.y) {
+    return empty;
+  }
+
+  return world->grid[y][x];
 }
 
 void world_print(struct World *world) {
 }
 
 bool world_set_square(struct World *world, int x, int y, int value) {
+  struct Vec2i dimensions = world_get_dimensions(world);
+
+  if (x < 0 || x >= dimensions.x) {
+    return false;
+  }
+
+  if (y < 0 || y >= dimensions.y) {
+    return false;
+  }
+
+  world->grid[y][x].value = value;
+  return true;
 }
 
 int world_get_num_neighbors(struct World *world, int x, int y) {
