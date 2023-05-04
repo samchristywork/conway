@@ -112,6 +112,39 @@ int world_get_num_neighbors(struct World *world, int x, int y) {
 }
 
 void world_simulate_step(struct World *world) {
+  struct Vec2i dimensions = world_get_dimensions(world);
+
+  struct Square world_copy[dimensions.y][dimensions.x];
+
+  for (int y = 0; y < dimensions.y; y++) {
+    for (int x = 0; x < dimensions.x; x++) {
+      int num_neighbors = world_get_num_neighbors(world, x, y);
+
+      if (world_get_square(world, x, y).value == CELL_DEAD) {
+        if (num_neighbors == 3) {
+          world_copy[y][x].value = CELL_LIVE;
+        } else {
+          world_copy[y][x].value = CELL_DEAD;
+        }
+      } else if (world_get_square(world, x, y).value == CELL_LIVE) {
+        if (num_neighbors < 2) {
+          world_copy[y][x].value = CELL_DEAD;
+        } else if (num_neighbors == 2 || num_neighbors == 3) {
+          world_copy[y][x].value = CELL_LIVE;
+        } else if (num_neighbors > 3) {
+          world_copy[y][x].value = CELL_DEAD;
+        } else {
+          world_copy[y][x].value = CELL_DEAD;
+        }
+      }
+    }
+  }
+
+  for (int y = 0; y < dimensions.y; y++) {
+    for (int x = 0; x < dimensions.x; x++) {
+      world_set_square(world, x, y, world_copy[y][x].value);
+    }
+  }
 }
 
 void world_print_num_neighbors(struct World *world) {
@@ -127,6 +160,17 @@ void world_print_num_neighbors(struct World *world) {
 }
 
 void world_random_seed(struct World *world, float percent) {
+  struct Vec2i dimensions = world_get_dimensions(world);
+
+  for (int y = 0; y < dimensions.y; y++) {
+    for (int x = 0; x < dimensions.x; x++) {
+      if (random() / (float)RAND_MAX > percent) {
+        world_set_square(world, x, y, CELL_DEAD);
+      }else if (random() / (float)RAND_MAX > percent) {
+        world_set_square(world, x, y, CELL_LIVE);
+      }
+    }
+  }
 }
 
 int main(int argc, char *argv[]) {
