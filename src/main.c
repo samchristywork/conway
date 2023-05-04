@@ -89,12 +89,32 @@ bool world_set_square(struct World *world, int x, int y, int value) {
 }
 
 int world_get_num_neighbors(struct World *world, int x, int y) {
+  int sum = 0;
+  for (int ry = -1; ry <= 1; ry++) {
+    for (int rx = -1; rx <= 1; rx++) {
+      if (rx || ry) {
+        if (world_get_square(world, x + rx, y + ry).value == CELL_LIVE) {
+          sum++;
+        }
+      }
+    }
+  }
+  return sum;
 }
 
 void world_simulate_step(struct World *world) {
 }
 
 void world_print_num_neighbors(struct World *world) {
+  struct Vec2i dimensions = world_get_dimensions(world);
+
+  for (int y = 0; y < dimensions.y; y++) {
+    for (int x = 0; x < dimensions.x; x++) {
+      printf("%d", world_get_num_neighbors(world, x, y));
+    }
+    printf("\n");
+  }
+  printf("\n");
 }
 
 void world_random_seed(struct World *world, float percent) {
