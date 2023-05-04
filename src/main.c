@@ -71,6 +71,15 @@ struct Square world_get_square(struct World *world, int x, int y) {
 }
 
 void world_print(struct World *world) {
+  struct Vec2i dimensions = world_get_dimensions(world);
+
+  for (int y = 0; y < dimensions.y; y++) {
+    for (int x = 0; x < dimensions.x; x++) {
+      printf("%c ", world_get_square(world, x, y).value);
+    }
+    printf("\n");
+  }
+  printf("\n");
 }
 
 bool world_set_square(struct World *world, int x, int y, int value) {
