@@ -174,7 +174,21 @@ void world_random_seed(struct World *world, float percent) {
 }
 
 int main(int argc, char *argv[]) {
+  add_arg('l', "loop", "Simulation should restart when complete.");
+  add_arg('x', "width", "The width of the world.");
+  add_arg('y', "height", "The height of the world.");
+
+  parse_opts(argc, argv);
+
+  bool loop = get_is_set('l');
+
   struct Vec2i world_dimensions = {-1, -1};
+  if (get_is_set('x')) {
+    world_dimensions.x = atoi(get_value('x'));
+  }
+  if (get_is_set('y')) {
+    world_dimensions.y = atoi(get_value('y'));
+  }
 
   if (world_dimensions.x <= 0) {
     world_dimensions.x = 30;
