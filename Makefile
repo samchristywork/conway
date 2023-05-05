@@ -19,6 +19,10 @@ list:
 	@echo Valid Targets:
 	@make -qp | awk -F':' '/^[a-zA-Z0-9][^$$#\/\t=]*:([^=]|$$)/ {split($$1,A,/ /);for(i in A)print A[i]}' | sort -u | grep -v "^Makefile$$" | sed 's/^/  - /g'
 
+.PHONY: run
+run: all
+	./build/main
+
 .PHONY: debug
 debug: CFLAGS+=-g -Wall -Wpedantic
 debug: LIBS+=
