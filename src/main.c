@@ -2,8 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <ncurses.h>
 
 #include <command_line.h>
+
+WINDOW *grid_win;
 
 enum {
   CELL_LIVE = 'o',
@@ -84,6 +87,17 @@ void world_print(struct World *world) {
     printf("\n");
   }
   printf("\n");
+}
+
+void world_print_ncurses(struct World *world) {
+  struct Vec2i dimensions = world_get_dimensions(world);
+
+  for (int y = 0; y < dimensions.y; y++) {
+    for (int x = 0; x < dimensions.x; x++) {
+      mvwaddch(grid_win, x, y, world_get_square(world, x, y).value);
+    }
+  }
+  wrefresh(grid_win);
 }
 
 void world_display(struct World *world, struct Renderer *renderer) {

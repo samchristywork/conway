@@ -1,5 +1,6 @@
 CC := gcc
 CFLAGS := -I src/
+LIBS := -lncurses
 
 .PHONY: all
 all: build/main
