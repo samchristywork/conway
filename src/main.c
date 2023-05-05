@@ -24,6 +24,10 @@ struct World {
   struct Square **grid;
 };
 
+struct Renderer {
+  void (*draw_function)(struct World *);
+};
+
 bool world_init(struct World *world, struct Vec2i dimensions) {
   world->_dimensions.x = dimensions.x;
   world->_dimensions.y = dimensions.y;
@@ -80,6 +84,10 @@ void world_print(struct World *world) {
     printf("\n");
   }
   printf("\n");
+}
+
+void world_display(struct World *world, struct Renderer *renderer) {
+  renderer->draw_function(world);
 }
 
 bool world_set_square(struct World *world, int x, int y, int value) {
@@ -202,8 +210,11 @@ int main(int argc, char *argv[]) {
 
   world_random_seed(&world, .5);
 
+  struct Renderer *renderer = malloc(sizeof(struct Renderer));
+  renderer->draw_function = &world_print;
+
   while (true) {
-    world_print(&world);
+    world_display(&world, renderer);
     world_simulate_step(&world);
     usleep(1000 * 100);
   }
