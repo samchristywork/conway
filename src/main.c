@@ -243,11 +243,15 @@ int main(int argc, char *argv[]) {
   world_random_seed(&world, .5);
 
   struct Renderer *renderer = malloc(sizeof(struct Renderer));
+  bzero(renderer, sizeof(struct Renderer));
+
   renderer->draw_function = &world_print_ncurses;
   renderer->init_function = &world_init_ncurses;
   renderer->cleanup_function = &world_cleanup_ncurses;
 
-  renderer->init_function(&world, world_dimensions);
+  if (renderer->init_function != NULL) {
+    renderer->init_function(&world, world_dimensions);
+  }
 
   while (true) {
     world_display(&world, renderer);
@@ -255,5 +259,7 @@ int main(int argc, char *argv[]) {
     usleep(1000 * 100);
   }
 
-  renderer->cleanup_function(&world);
+  if (renderer->cleanup_function != NULL) {
+    renderer->cleanup_function(&world);
+  }
 }
