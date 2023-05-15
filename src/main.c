@@ -28,42 +28,43 @@ struct World {
 };
 
 struct Renderer {
-  void (*init_function)(struct World *, struct Vec2i);
+  int (*init_function)(struct World *, struct Vec2i);
   void (*draw_function)(struct World *);
   void (*cleanup_function)(struct World *);
+  int (*event_handler_function)();
 };
 
-void *world_init_ncurses(struct World *world, struct Vec2i world_dimensions) {
+int world_init_ncurses(struct World *world, struct Vec2i world_dimensions) {
   initscr();
   noecho();
   curs_set(FALSE);
   grid_win = newwin(world_dimensions.y, world_dimensions.x, 0, 0);
 
-  return NULL;
+  return TRUE;
 }
 
-void *world_cleanup_ncurses(struct World *world) {
+void world_cleanup_ncurses(struct World *world) {
   delwin(grid_win);
   endwin();
 
   return NULL;
 }
 
-bool world_init(struct World *world, struct Vec2i dimensions) {
+int world_init(struct World *world, struct Vec2i dimensions) {
   world->_dimensions.x = dimensions.x;
   world->_dimensions.y = dimensions.y;
 
   world->grid =
       (struct Square **)malloc(sizeof(struct Square *) * dimensions.y);
   if (!world->grid) {
-    return false;
+    return FALSE;
   }
 
   for (int y = 0; y < dimensions.y; y++) {
     world->grid[y] =
         (struct Square *)malloc(sizeof(struct Square) * dimensions.x);
     if (!world->grid[y]) {
-      return false;
+      return FALSE;
     }
 
     for (int x = 0; x < dimensions.x; x++) {
@@ -71,7 +72,7 @@ bool world_init(struct World *world, struct Vec2i dimensions) {
     }
   }
 
-  return true;
+  return TRUE;
 }
 
 struct Vec2i world_get_dimensions(struct World *world) {
