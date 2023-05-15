@@ -1,8 +1,8 @@
+#include <ncurses.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <ncurses.h>
 
 #include <command_line.h>
 
@@ -28,8 +28,16 @@ struct World {
 };
 
 struct Renderer {
+  void (*init_function)(struct World *, struct Vec2i);
   void (*draw_function)(struct World *);
+  void (*cleanup_function)(struct World *);
 };
+
+void *world_init_ncurses(struct World *world, struct Vec2i world_dimensions) {
+}
+
+void *world_cleanup_ncurses(struct World *world) {
+}
 
 bool world_init(struct World *world, struct Vec2i dimensions) {
   world->_dimensions.x = dimensions.x;
@@ -188,7 +196,7 @@ void world_random_seed(struct World *world, float percent) {
     for (int x = 0; x < dimensions.x; x++) {
       if (random() / (float)RAND_MAX > percent) {
         world_set_square(world, x, y, CELL_DEAD);
-      }else if (random() / (float)RAND_MAX > percent) {
+      } else if (random() / (float)RAND_MAX > percent) {
         world_set_square(world, x, y, CELL_LIVE);
       }
     }
@@ -222,15 +230,14 @@ int main(int argc, char *argv[]) {
   struct World world;
   world_init(&world, world_dimensions);
 
-  initscr();
-  noecho();
-  curs_set(FALSE);
-  grid_win = newwin(world_dimensions.y, world_dimensions.x, 0, 0);
-
   world_random_seed(&world, .5);
 
   struct Renderer *renderer = malloc(sizeof(struct Renderer));
   renderer->draw_function = &world_print_ncurses;
+  renderer->init_function = &world_init_ncurses;
+  renderer->cleanup_function = &world_cleanup_ncurses;
+
+  renderer->init_function(&world, world_dimensions);
 
   while (true) {
     world_display(&world, renderer);
@@ -238,5 +245,5 @@ int main(int argc, char *argv[]) {
     usleep(1000 * 100);
   }
 
-  endwin();
+  renderer->cleanup_function(&world);
 }
