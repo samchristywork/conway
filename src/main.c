@@ -222,14 +222,21 @@ int main(int argc, char *argv[]) {
   struct World world;
   world_init(&world, world_dimensions);
 
+  initscr();
+  noecho();
+  curs_set(FALSE);
+  grid_win = newwin(world_dimensions.y, world_dimensions.x, 0, 0);
+
   world_random_seed(&world, .5);
 
   struct Renderer *renderer = malloc(sizeof(struct Renderer));
-  renderer->draw_function = &world_print;
+  renderer->draw_function = &world_print_ncurses;
 
   while (true) {
     world_display(&world, renderer);
     world_simulate_step(&world);
     usleep(1000 * 100);
   }
+
+  endwin();
 }
