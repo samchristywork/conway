@@ -6,37 +6,8 @@
 
 #include <command_line.h>
 #include <main.h>
+#include <render.h>
 
-int world_init_ncurses(struct World *world, struct Vec2i world_dimensions) {
-  initscr();
-  cbreak();
-  curs_set(FALSE);
-  nodelay(stdscr, TRUE);
-  noecho();
-  scrollok(stdscr, TRUE);
-
-  grid_win = newwin(world_dimensions.y, world_dimensions.x, 0, 0);
-  if (grid_win == NULL) {
-    return FALSE;
-  }
-
-  return TRUE;
-}
-
-void world_cleanup_ncurses(struct World *world) {
-  delwin(grid_win);
-  endwin();
-}
-
-int event_handler_ncurses() {
-  int ch = getch();
-
-  if (ch != ERR) {
-    return FALSE;
-  }
-
-  return TRUE;
-}
 
 int world_init(struct World *world, struct Vec2i dimensions) {
   world->_dimensions.x = dimensions.x;
@@ -82,29 +53,6 @@ struct Square world_get_square(struct World *world, int x, int y) {
   }
 
   return world->grid[y][x];
-}
-
-void world_print(struct World *world) {
-  struct Vec2i dimensions = world_get_dimensions(world);
-
-  for (int y = 0; y < dimensions.y; y++) {
-    for (int x = 0; x < dimensions.x; x++) {
-      printf("%c ", world_get_square(world, x, y).value);
-    }
-    printf("\n");
-  }
-  printf("\n");
-}
-
-void world_print_ncurses(struct World *world) {
-  struct Vec2i dimensions = world_get_dimensions(world);
-
-  for (int y = 0; y < dimensions.y; y++) {
-    for (int x = 0; x < dimensions.x; x++) {
-      mvwaddch(grid_win, y, x, world_get_square(world, x, y).value);
-    }
-  }
-  wrefresh(grid_win);
 }
 
 void world_display(struct World *world, struct Renderer *renderer) {
@@ -174,18 +122,6 @@ void world_simulate_step(struct World *world) {
       world_set_square(world, x, y, world_copy[y][x].value);
     }
   }
-}
-
-void world_print_num_neighbors(struct World *world) {
-  struct Vec2i dimensions = world_get_dimensions(world);
-
-  for (int y = 0; y < dimensions.y; y++) {
-    for (int x = 0; x < dimensions.x; x++) {
-      printf("%d", world_get_num_neighbors(world, x, y));
-    }
-    printf("\n");
-  }
-  printf("\n");
 }
 
 void world_random_seed(struct World *world, float percent) {
