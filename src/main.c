@@ -36,8 +36,12 @@ struct Renderer {
 
 int world_init_ncurses(struct World *world, struct Vec2i world_dimensions) {
   initscr();
-  noecho();
+  cbreak();
   curs_set(FALSE);
+  nodelay(stdscr, TRUE);
+  noecho();
+  scrollok(stdscr, TRUE);
+
   grid_win = newwin(world_dimensions.y, world_dimensions.x, 0, 0);
 
   return TRUE;
@@ -46,8 +50,16 @@ int world_init_ncurses(struct World *world, struct Vec2i world_dimensions) {
 void world_cleanup_ncurses(struct World *world) {
   delwin(grid_win);
   endwin();
+}
 
-  return NULL;
+int event_handler_ncurses() {
+  int ch = getch();
+
+  if (ch != ERR) {
+    return FALSE;
+  }
+
+  return TRUE;
 }
 
 int world_init(struct World *world, struct Vec2i dimensions) {
@@ -249,12 +261,19 @@ int main(int argc, char *argv[]) {
   renderer->draw_function = &world_print_ncurses;
   renderer->init_function = &world_init_ncurses;
   renderer->cleanup_function = &world_cleanup_ncurses;
+  renderer->event_handler_function = &event_handler_ncurses;
 
   if (renderer->init_function != NULL) {
     renderer->init_function(&world, world_dimensions);
   }
 
   while (true) {
+    if (renderer->event_handler_function != NULL) {
+      if (renderer->event_handler_function() == FALSE) {
+        break;
+      }
+    }
+
     world_display(&world, renderer);
     world_simulate_step(&world);
     usleep(1000 * 100);
