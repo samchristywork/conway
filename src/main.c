@@ -43,6 +43,9 @@ int world_init_ncurses(struct World *world, struct Vec2i world_dimensions) {
   scrollok(stdscr, TRUE);
 
   grid_win = newwin(world_dimensions.y, world_dimensions.x, 0, 0);
+  if (grid_win == NULL) {
+    return FALSE;
+  }
 
   return TRUE;
 }
@@ -264,7 +267,10 @@ int main(int argc, char *argv[]) {
   renderer->event_handler_function = &event_handler_ncurses;
 
   if (renderer->init_function != NULL) {
-    renderer->init_function(&world, world_dimensions);
+    if (renderer->init_function(&world, world_dimensions) == FALSE) {
+      fprintf(stderr, "Failed to initialize renderer.\n");
+      exit(EXIT_FAILURE);
+    }
   }
 
   while (true) {
