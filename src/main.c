@@ -34,9 +34,19 @@ struct Renderer {
 };
 
 void *world_init_ncurses(struct World *world, struct Vec2i world_dimensions) {
+  initscr();
+  noecho();
+  curs_set(FALSE);
+  grid_win = newwin(world_dimensions.y, world_dimensions.x, 0, 0);
+
+  return NULL;
 }
 
 void *world_cleanup_ncurses(struct World *world) {
+  delwin(grid_win);
+  endwin();
+
+  return NULL;
 }
 
 bool world_init(struct World *world, struct Vec2i dimensions) {
