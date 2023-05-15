@@ -5,34 +5,7 @@
 #include <unistd.h>
 
 #include <command_line.h>
-
-WINDOW *grid_win;
-
-enum {
-  CELL_LIVE = 'o',
-  CELL_DEAD = '.',
-};
-
-struct Vec2i {
-  int x;
-  int y;
-};
-
-struct Square {
-  int value;
-};
-
-struct World {
-  struct Vec2i _dimensions;
-  struct Square **grid;
-};
-
-struct Renderer {
-  int (*init_function)(struct World *, struct Vec2i);
-  void (*draw_function)(struct World *);
-  void (*cleanup_function)(struct World *);
-  int (*event_handler_function)();
-};
+#include <main.h>
 
 int world_init_ncurses(struct World *world, struct Vec2i world_dimensions) {
   initscr();
