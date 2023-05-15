@@ -112,7 +112,7 @@ void world_print_ncurses(struct World *world) {
 
   for (int y = 0; y < dimensions.y; y++) {
     for (int x = 0; x < dimensions.x; x++) {
-      mvwaddch(grid_win, x, y, world_get_square(world, x, y).value);
+      mvwaddch(grid_win, y, x, world_get_square(world, x, y).value);
     }
   }
   wrefresh(grid_win);
