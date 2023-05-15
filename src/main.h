@@ -22,6 +22,10 @@ struct World {
   struct Square **grid;
 };
 
+struct Context {
+  WINDOW *grid_win;
+};
+
 struct Renderer {
   int (*init_function)(struct Context *, struct World *, struct Vec2i);
   void (*draw_function)(struct Context *, struct World *);

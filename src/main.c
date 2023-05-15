@@ -8,6 +8,7 @@
 #include <main.h>
 #include <render.h>
 
+struct Context ctx;
 
 int world_init(struct World *world, struct Vec2i dimensions) {
   world->_dimensions.x = dimensions.x;
@@ -56,7 +57,7 @@ struct Square world_get_square(struct World *world, int x, int y) {
 }
 
 void world_display(struct World *world, struct Renderer *renderer) {
-  renderer->draw_function(world);
+  renderer->draw_function(&ctx, world);
 }
 
 bool world_set_square(struct World *world, int x, int y, int value) {
@@ -176,7 +177,7 @@ int main(int argc, char *argv[]) {
   renderer->event_handler_function = &event_handler_ncurses;
 
   if (renderer->init_function != NULL) {
-    if (renderer->init_function(&world, world_dimensions) == FALSE) {
+    if (renderer->init_function(&ctx, &world, world_dimensions) == FALSE) {
       fprintf(stderr, "Failed to initialize renderer.\n");
       exit(EXIT_FAILURE);
     }
@@ -195,6 +196,6 @@ int main(int argc, char *argv[]) {
   }
 
   if (renderer->cleanup_function != NULL) {
-    renderer->cleanup_function(&world);
+    renderer->cleanup_function(&ctx, &world);
   }
 }
