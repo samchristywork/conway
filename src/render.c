@@ -40,16 +40,17 @@ int event_handler_ncurses() {
 }
 
 void world_print_ncurses(struct Context *ctx, struct World *world) {
+
   struct Vec2i dimensions = world_get_dimensions(world);
 
-  mvhline(0, 0, 0, dimensions.x + 1);
-  mvhline(dimensions.y + 1, 0, 0, dimensions.x + 1);
-  mvvline(0, 0, 0, dimensions.y + 1);
-  mvvline(0, dimensions.x + 1, 0, dimensions.y + 1);
-  mvaddch(0, 0, ACS_ULCORNER);
-  mvaddch(dimensions.y + 1, 0, ACS_LLCORNER);
-  mvaddch(0, dimensions.x + 1, ACS_URCORNER);
-  mvaddch(dimensions.y + 1, dimensions.x + 1, ACS_LRCORNER);
+  mvwhline(ctx->grid_win, 0, 0, 0, dimensions.x + 1);
+  mvwhline(ctx->grid_win, dimensions.y + 1, 0, 0, dimensions.x + 1);
+  mvwvline(ctx->grid_win, 0, 0, 0, dimensions.y + 1);
+  mvwvline(ctx->grid_win, 0, dimensions.x + 1, 0, dimensions.y + 1);
+  mvwaddch(ctx->grid_win, 0, 0, ACS_ULCORNER);
+  mvwaddch(ctx->grid_win, dimensions.y + 1, 0, ACS_LLCORNER);
+  mvwaddch(ctx->grid_win, 0, dimensions.x + 1, ACS_URCORNER);
+  mvwaddch(ctx->grid_win, dimensions.y + 1, dimensions.x + 1, ACS_LRCORNER);
 
   for (int y = 0; y < dimensions.y; y++) {
     for (int x = 0; x < dimensions.x; x++) {
