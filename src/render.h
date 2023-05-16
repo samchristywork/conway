@@ -3,7 +3,8 @@
 
 #include <main.h>
 
-int world_init_ncurses(struct Context *ctx, struct World *world, struct Vec2i world_dimensions);
+int world_init_ncurses(struct Context *ctx, struct World *world,
+                       struct Vec2i world_dimensions);
 
 void world_cleanup_ncurses(struct Context *ctx, struct World *world);
 

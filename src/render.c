@@ -16,7 +16,7 @@ int world_init_ncurses(struct Context *ctx, struct World *world,
   noecho();
   scrollok(stdscr, TRUE);
 
-  ctx->grid_win = newwin(world_dimensions.y, world_dimensions.x, 0, 0);
+  ctx->grid_win = newwin(world_dimensions.y + 2, world_dimensions.x + 2, 0, 0);
   if (ctx->grid_win == NULL) {
     return FALSE;
   }
@@ -42,11 +42,22 @@ int event_handler_ncurses() {
 void world_print_ncurses(struct Context *ctx, struct World *world) {
   struct Vec2i dimensions = world_get_dimensions(world);
 
+  mvhline(0, 0, 0, dimensions.x + 1);
+  mvhline(dimensions.y + 1, 0, 0, dimensions.x + 1);
+  mvvline(0, 0, 0, dimensions.y + 1);
+  mvvline(0, dimensions.x + 1, 0, dimensions.y + 1);
+  mvaddch(0, 0, ACS_ULCORNER);
+  mvaddch(dimensions.y + 1, 0, ACS_LLCORNER);
+  mvaddch(0, dimensions.x + 1, ACS_URCORNER);
+  mvaddch(dimensions.y + 1, dimensions.x + 1, ACS_LRCORNER);
+
   for (int y = 0; y < dimensions.y; y++) {
     for (int x = 0; x < dimensions.x; x++) {
-      mvwaddch(ctx->grid_win, y, x, world_get_square(world, x, y).value);
+      mvwaddch(ctx->grid_win, y + 1, x + 1,
+               world_get_square(world, x, y).value);
     }
   }
+
   wrefresh(ctx->grid_win);
 }
 
