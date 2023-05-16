@@ -12,7 +12,7 @@ build/%.o: src/%.c
 	mkdir -p build
 	$(CC) -c $(CFLAGS) $< -o $@
 
-build/main: build/main.o
+build/main: build/main.o build/render.o
 	${CC} build/*.o ${LIBS} -o $@
 
 .PHONY: list
