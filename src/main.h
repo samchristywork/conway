@@ -5,7 +5,7 @@
 
 enum {
   CELL_LIVE = 'o',
-  CELL_DEAD = '.',
+  CELL_DEAD = ' ',
 };
 
 struct Vec2i {
