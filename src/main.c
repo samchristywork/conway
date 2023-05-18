@@ -145,11 +145,11 @@ int main(int argc, char *argv[]) {
   ctx.frame_delay = 100;
 
   add_arg('l', "loop", "Simulation should restart when complete.");
-  add_arg('x', "width", "The width of the world.");
-  add_arg('y', "height", "The height of the world.");
-  add_arg('a', "alive-cell", "The character to use for living cells.");
-  add_arg('d', "dead-cell", "The character to use for dead cells.");
-  add_arg('f', "frame-delay", "The delay between frames in milliseconds.");
+  add_arg('x', "width", "The width of the world (default 30).");
+  add_arg('y', "height", "The height of the world (default 30).");
+  add_arg('a', "alive-cell", "The character to use for living cells (default 'o').");
+  add_arg('d', "dead-cell", "The character to use for dead cells (default ' ').");
+  add_arg('f', "frame-delay", "The delay between frames in milliseconds (default 100).");
 
   parse_opts(argc, argv);
 
