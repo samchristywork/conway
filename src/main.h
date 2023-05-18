@@ -3,11 +3,6 @@
 
 #include <curses.h>
 
-enum {
-  CELL_LIVE = 'o',
-  CELL_DEAD = ' ',
-};
-
 struct Vec2i {
   int x;
   int y;
@@ -24,6 +19,8 @@ struct World {
 
 struct Context {
   WINDOW *grid_win;
+  char cell_alive;
+  char cell_dead;
 };
 
 struct Renderer {

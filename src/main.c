@@ -28,7 +28,7 @@ int world_init(struct World *world, struct Vec2i dimensions) {
     }
 
     for (int x = 0; x < dimensions.x; x++) {
-      world->grid[y][x].value = CELL_DEAD;
+      world->grid[y][x].value = ctx.cell_dead;
     }
   }
 
@@ -43,7 +43,7 @@ struct Square world_get_square(struct World *world, int x, int y) {
   struct Vec2i dimensions = world_get_dimensions(world);
 
   struct Square empty;
-  empty.value = CELL_DEAD;
+  empty.value = ctx.cell_dead;
 
   if (x < 0 || x >= dimensions.x) {
     return empty;
@@ -80,7 +80,7 @@ int world_get_num_neighbors(struct World *world, int x, int y) {
   for (int ry = -1; ry <= 1; ry++) {
     for (int rx = -1; rx <= 1; rx++) {
       if (rx || ry) {
-        if (world_get_square(world, x + rx, y + ry).value == CELL_LIVE) {
+        if (world_get_square(world, x + rx, y + ry).value == ctx.cell_alive) {
           sum++;
         }
       }
@@ -98,21 +98,21 @@ void world_simulate_step(struct World *world) {
     for (int x = 0; x < dimensions.x; x++) {
       int num_neighbors = world_get_num_neighbors(world, x, y);
 
-      if (world_get_square(world, x, y).value == CELL_DEAD) {
+      if (world_get_square(world, x, y).value == ctx.cell_dead) {
         if (num_neighbors == 3) {
-          world_copy[y][x].value = CELL_LIVE;
+          world_copy[y][x].value = ctx.cell_alive;
         } else {
-          world_copy[y][x].value = CELL_DEAD;
+          world_copy[y][x].value = ctx.cell_dead;
         }
-      } else if (world_get_square(world, x, y).value == CELL_LIVE) {
+      } else if (world_get_square(world, x, y).value == ctx.cell_alive) {
         if (num_neighbors < 2) {
-          world_copy[y][x].value = CELL_DEAD;
+          world_copy[y][x].value = ctx.cell_dead;
         } else if (num_neighbors == 2 || num_neighbors == 3) {
-          world_copy[y][x].value = CELL_LIVE;
+          world_copy[y][x].value = ctx.cell_alive;
         } else if (num_neighbors > 3) {
-          world_copy[y][x].value = CELL_DEAD;
+          world_copy[y][x].value = ctx.cell_dead;
         } else {
-          world_copy[y][x].value = CELL_DEAD;
+          world_copy[y][x].value = ctx.cell_dead;
         }
       }
     }
@@ -131,9 +131,9 @@ void world_random_seed(struct World *world, float percent) {
   for (int y = 0; y < dimensions.y; y++) {
     for (int x = 0; x < dimensions.x; x++) {
       if (random() / (float)RAND_MAX > percent) {
-        world_set_square(world, x, y, CELL_DEAD);
+        world_set_square(world, x, y, ctx.cell_dead);
       } else if (random() / (float)RAND_MAX > percent) {
-        world_set_square(world, x, y, CELL_LIVE);
+        world_set_square(world, x, y, ctx.cell_alive);
       }
     }
   }
