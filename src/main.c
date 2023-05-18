@@ -140,9 +140,14 @@ void world_random_seed(struct World *world, float percent) {
 }
 
 int main(int argc, char *argv[]) {
+  ctx.cell_alive = 'O';
+  ctx.cell_dead = ' ';
+
   add_arg('l', "loop", "Simulation should restart when complete.");
   add_arg('x', "width", "The width of the world.");
   add_arg('y', "height", "The height of the world.");
+  add_arg('a', "alive-cell", "The character to use for living cells.");
+  add_arg('d', "dead-cell", "The character to use for dead cells.");
 
   parse_opts(argc, argv);
 
@@ -154,6 +159,18 @@ int main(int argc, char *argv[]) {
   }
   if (get_is_set('y')) {
     world_dimensions.y = atoi(get_value('y'));
+  }
+
+  if (get_is_set('a')) {
+    if (get_value('a')[0] != '\0') {
+      ctx.cell_alive = get_value('a')[0];
+    }
+  }
+
+  if (get_is_set('d')) {
+    if (get_value('d')[0] != '\0') {
+      ctx.cell_dead = get_value('d')[0];
+    }
   }
 
   if (world_dimensions.x <= 0) {
