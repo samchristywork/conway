@@ -142,12 +142,14 @@ void world_random_seed(struct World *world, float percent) {
 int main(int argc, char *argv[]) {
   ctx.cell_alive = 'O';
   ctx.cell_dead = ' ';
+  ctx.frame_delay = 100;
 
   add_arg('l', "loop", "Simulation should restart when complete.");
   add_arg('x', "width", "The width of the world.");
   add_arg('y', "height", "The height of the world.");
   add_arg('a', "alive-cell", "The character to use for living cells.");
   add_arg('d', "dead-cell", "The character to use for dead cells.");
+  add_arg('f', "frame-delay", "The delay between frames in milliseconds.");
 
   parse_opts(argc, argv);
 
@@ -159,6 +161,9 @@ int main(int argc, char *argv[]) {
   }
   if (get_is_set('y')) {
     world_dimensions.y = atoi(get_value('y'));
+  }
+  if (get_is_set('f')) {
+    ctx.frame_delay = atoi(get_value('f'));
   }
 
   if (get_is_set('a')) {
@@ -209,7 +214,7 @@ int main(int argc, char *argv[]) {
 
     world_display(&world, renderer);
     world_simulate_step(&world);
-    usleep(1000 * 100);
+    usleep(ctx.frame_delay * 1000);
   }
 
   if (renderer->cleanup_function != NULL) {

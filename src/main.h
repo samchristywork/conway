@@ -21,6 +21,7 @@ struct Context {
   WINDOW *grid_win;
   char cell_alive;
   char cell_dead;
+  int frame_delay;
 };
 
 struct Renderer {
