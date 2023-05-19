@@ -184,6 +184,20 @@ int world_full(struct World *world) {
   return 1;
 }
 
+int world_empty(struct World *world) {
+  struct Vec2i dimensions = world_get_dimensions(world);
+
+  for (int y = 0; y < dimensions.y; y++) {
+    for (int x = 0; x < dimensions.x; x++) {
+      if (world_get_square(world, x, y).value == ctx.cell_alive) {
+        return 0;
+      }
+    }
+  }
+
+  return 1;
+}
+
 int main(int argc, char *argv[]) {
   ctx.cell_alive = 'O';
   ctx.cell_dead = ' ';
