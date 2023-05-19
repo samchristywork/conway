@@ -211,10 +211,17 @@ int main(int argc, char *argv[]) {
   struct Renderer *renderer = malloc(sizeof(struct Renderer));
   bzero(renderer, sizeof(struct Renderer));
 
-  renderer->draw_function = &world_print_ncurses;
-  renderer->init_function = &world_init_ncurses;
-  renderer->cleanup_function = &world_cleanup_ncurses;
-  renderer->event_handler_function = &event_handler_ncurses;
+  switch (ctx.renderer) {
+    case RENDERER_NCURSES:
+      renderer->draw_function = &world_print_ncurses;
+      renderer->init_function = &world_init_ncurses;
+      renderer->cleanup_function = &world_cleanup_ncurses;
+      renderer->event_handler_function = &event_handler_ncurses;
+      break;
+    case RENDERER_TERM:
+      renderer->draw_function = &world_print_term;
+      break;
+  }
 
   if (renderer->init_function != NULL) {
     if (renderer->init_function(&ctx, &world, world_dimensions) == FALSE) {
