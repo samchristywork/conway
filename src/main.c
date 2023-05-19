@@ -56,10 +56,6 @@ struct Square world_get_square(struct World *world, int x, int y) {
   return world->grid[y][x];
 }
 
-void world_display(struct World *world, struct Renderer *renderer) {
-  renderer->draw_function(&ctx, world);
-}
-
 bool world_set_square(struct World *world, int x, int y, int value) {
   struct Vec2i dimensions = world_get_dimensions(world);
 
@@ -237,7 +233,9 @@ int main(int argc, char *argv[]) {
       }
     }
 
-    world_display(&world, renderer);
+    if (renderer->draw_function != NULL) {
+      renderer->draw_function(&ctx, &world);
+    }
     world_simulate_step(&world);
     usleep(ctx.frame_delay * 1000);
   }
