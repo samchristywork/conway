@@ -121,6 +121,16 @@ void world_simulate_step(struct World *world) {
   }
 }
 
+void world_blank_seed(struct World *world) {
+  struct Vec2i dimensions = world_get_dimensions(world);
+
+  for (int y = 0; y < dimensions.y; y++) {
+    for (int x = 0; x < dimensions.x; x++) {
+      world_set_square(world, x, y, ctx.cell_dead);
+    }
+  }
+}
+
 void world_random_seed(struct World *world, float percent) {
   struct Vec2i dimensions = world_get_dimensions(world);
 
