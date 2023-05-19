@@ -145,6 +145,16 @@ void world_random_seed(struct World *world, float percent) {
   }
 }
 
+void world_copy(struct World *dest, struct World *src) {
+  struct Vec2i dimensions = world_get_dimensions(src);
+
+  for (int y = 0; y < dimensions.y; y++) {
+    for (int x = 0; x < dimensions.x; x++) {
+      world_set_square(dest, x, y, world_get_square(src, x, y).value);
+    }
+  }
+}
+
 int main(int argc, char *argv[]) {
   ctx.cell_alive = 'O';
   ctx.cell_dead = ' ';
