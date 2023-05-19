@@ -178,6 +178,8 @@ int main(int argc, char *argv[]) {
     }
   }
 
+  ctx.renderer = RENDERER_NCURSES;
+
   if (world_dimensions.x <= 0) {
     world_dimensions.x = 30;
   }

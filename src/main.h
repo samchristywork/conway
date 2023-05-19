@@ -3,6 +3,13 @@
 
 #include <curses.h>
 
+enum RendererType {
+  RENDERER_NONE = 0,
+  RENDERER_NCURSES,
+  RENDERER_SDL,
+  RENDERER_TERM,
+};
+
 struct Vec2i {
   int x;
   int y;
@@ -22,6 +29,7 @@ struct Context {
   char cell_alive;
   char cell_dead;
   int frame_delay;
+  int renderer;
 };
 
 struct Renderer {
