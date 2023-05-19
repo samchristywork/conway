@@ -150,6 +150,7 @@ int main(int argc, char *argv[]) {
   add_arg('a', "alive-cell", "The character to use for living cells (default 'o').");
   add_arg('d', "dead-cell", "The character to use for dead cells (default ' ').");
   add_arg('f', "frame-delay", "The delay between frames in milliseconds (default 100).");
+  add_arg('r', "renderer", "The renderer to use.");
 
   parse_opts(argc, argv);
 
@@ -179,6 +180,21 @@ int main(int argc, char *argv[]) {
   }
 
   ctx.renderer = RENDERER_NCURSES;
+
+  if (get_is_set('r')) {
+    if (strcmp(get_value('r'), "ncurses") == 0) {
+      ctx.renderer = RENDERER_NCURSES;
+    } else if (strcmp(get_value('r'), "sdl") == 0) {
+      ctx.renderer = RENDERER_SDL;
+    } else if (strcmp(get_value('r'), "none") == 0) {
+      ctx.renderer = RENDERER_NONE;
+    }else if (strcmp(get_value('r'), "term") == 0) {
+      ctx.renderer = RENDERER_TERM;
+    } else {
+      fprintf(stderr, "Invalid renderer: %s\n", get_value('r'));
+      exit(1);
+    }
+  }
 
   if (world_dimensions.x <= 0) {
     world_dimensions.x = 30;
