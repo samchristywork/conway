@@ -12,7 +12,7 @@ int event_handler_ncurses();
 
 void world_print_ncurses(struct Context *ctx, struct World *world);
 
-void world_print(struct World *world);
+void world_print_term(struct Context *ctx, struct World *world);
 
 void world_print_num_neighbors(struct World *world);
 

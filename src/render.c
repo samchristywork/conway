@@ -68,7 +68,7 @@ void world_print_ncurses(struct Context *ctx, struct World *world) {
   wrefresh(ctx->grid_win);
 }
 
-void world_print(struct World *world) {
+void world_print_term(struct Context *ctx, struct World *world) {
   struct Vec2i dimensions = world_get_dimensions(world);
 
   for (int y = 0; y < dimensions.y; y++) {
