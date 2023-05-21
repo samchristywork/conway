@@ -299,13 +299,16 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions,
 
   clock_gettime(CLOCK_MONOTONIC_RAW, &end);
 
-  printf("Ran %d worlds, %d were empty\n", num_worlds, num_empty);
-  printf("Max alive: %d\n", max_alive);
-  printf("Took %f seconds\n", (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0);
-
   if (renderer->cleanup_function != NULL) {
     renderer->cleanup_function(&ctx, &world);
   }
+
+  printf("Ran %d worlds, %d were empty\n", num_worlds, num_empty);
+  printf("Max alive: %d\n", max_alive);
+  printf("Took %f seconds\n", (end.tv_sec - start.tv_sec) +
+                                  (end.tv_nsec - start.tv_nsec) / 1000000000.0);
+  printf("Best world:\n");
+  world_print_term(&ctx, &best);
 }
 
 int main(int argc, char *argv[]) {
@@ -316,9 +319,12 @@ int main(int argc, char *argv[]) {
   add_arg('l', "loop", "Simulation should restart when complete.");
   add_arg('x', "width", "The width of the world (default 30).");
   add_arg('y', "height", "The height of the world (default 30).");
-  add_arg('a', "alive-cell", "The character to use for living cells (default 'o').");
-  add_arg('d', "dead-cell", "The character to use for dead cells (default ' ').");
-  add_arg('f', "frame-delay", "The delay between frames in milliseconds (default 100).");
+  add_arg('a', "alive-cell",
+          "The character to use for living cells (default 'o').");
+  add_arg('d', "dead-cell",
+          "The character to use for dead cells (default ' ').");
+  add_arg('f', "frame-delay",
+          "The delay between frames in milliseconds (default 100).");
   add_arg('r', "renderer", "The renderer to use.");
 
   parse_opts(argc, argv);
@@ -376,45 +382,16 @@ int main(int argc, char *argv[]) {
   bzero(renderer, sizeof(struct Renderer));
 
   switch (ctx.renderer) {
-    case RENDERER_NCURSES:
-      renderer->draw_function = &world_print_ncurses;
-      renderer->init_function = &world_init_ncurses;
-      renderer->cleanup_function = &world_cleanup_ncurses;
-      renderer->event_handler_function = &event_handler_ncurses;
-      break;
-    case RENDERER_TERM:
-      renderer->draw_function = &world_print_term;
-      break;
+  case RENDERER_NCURSES:
+    renderer->draw_function = &world_print_ncurses;
+    renderer->init_function = &world_init_ncurses;
+    renderer->cleanup_function = &world_cleanup_ncurses;
+    renderer->event_handler_function = &event_handler_ncurses;
+    break;
+  case RENDERER_TERM:
+    renderer->draw_function = &world_print_term;
+    break;
   }
 
-  struct World world;
-  world_init(&world, world_dimensions);
-
-  if (renderer->init_function != NULL) {
-    if (renderer->init_function(&ctx, &world, world_dimensions) == FALSE) {
-      fprintf(stderr, "Failed to initialize renderer.\n");
-      exit(EXIT_FAILURE);
-    }
-  }
-
-  world_random_seed(&world, .5);
-
-  while (true) {
-    if (renderer->event_handler_function != NULL) {
-      if (renderer->event_handler_function() == FALSE) {
-        break;
-      }
-    }
-
-    if (renderer->draw_function != NULL) {
-      renderer->draw_function(&ctx, &world);
-    }
-    world_simulate_step(&world);
-    usleep(ctx.frame_delay * 1000);
-    ctx.frame++;
-  }
-
-  if (renderer->cleanup_function != NULL) {
-    renderer->cleanup_function(&ctx, &world);
-  }
+  run_experiment(renderer, world_dimensions, SEED_BLANK);
 }
