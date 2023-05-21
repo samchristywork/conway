@@ -273,6 +273,9 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
 
   clock_gettime(CLOCK_MONOTONIC_RAW, &end);
 
+  printf("Ran %d worlds, %d were empty\n", num_worlds, num_empty);
+  printf("Took %f seconds\n", (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0);
+
   if (renderer->cleanup_function != NULL) {
     renderer->cleanup_function(&ctx, &world);
   }
