@@ -218,6 +218,7 @@ int num_alive(struct World *world) {
 void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions,
                     int seed_type) {
   struct World world;
+  struct World best;
   world_init(&world, world_dimensions);
 
   if (renderer->init_function != NULL) {
@@ -249,6 +250,9 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions,
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 
+  world_init(&best, world_dimensions);
+  world_copy(&best, &seed);
+
   int running = TRUE;
   while (running) {
     world_copy(&world, &seed);
@@ -279,6 +283,7 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions,
 
     if (num_alive(&world) > max_alive) {
       max_alive = num_alive(&world);
+      world_copy(&best, &world);
       if (ctx.renderer == RENDERER_NONE) {
         printf("New max alive: %d\n", max_alive);
         world_print_term(&ctx, &world);
