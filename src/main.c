@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <time.h>
 
 #include <command_line.h>
 #include <main.h>
@@ -232,6 +233,9 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
   int num_worlds=0;
   int num_empty=0;
 
+  struct timespec start, end;
+  clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+
   int running = TRUE;
   while (running) {
     world_copy(&world, &seed);
@@ -266,6 +270,8 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
 
     world_increment_seed(&seed);
   }
+
+  clock_gettime(CLOCK_MONOTONIC_RAW, &end);
 
   if (renderer->cleanup_function != NULL) {
     renderer->cleanup_function(&ctx, &world);
