@@ -229,6 +229,9 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
   world_init(&seed, world_dimensions);
   world_blank_seed(&seed);
 
+  int num_worlds=0;
+  int num_empty=0;
+
   int running = TRUE;
   while (running) {
     world_copy(&world, &seed);
@@ -250,6 +253,12 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
       usleep(ctx.frame_delay * 1000);
       ctx.frame++;
     }
+
+    if (world_empty(&world)) {
+      num_empty++;
+    }
+
+    num_worlds++;
 
     if (world_full(&seed)) {
       running = FALSE;
