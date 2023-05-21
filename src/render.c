@@ -16,7 +16,12 @@ int world_init_ncurses(struct Context *ctx, struct World *world,
   noecho();
   scrollok(stdscr, TRUE);
 
-  ctx->grid_win = newwin(world_dimensions.y + 3, world_dimensions.x + 2, 0, 0);
+  if (world_dimensions.x + 2 < 10) {
+    ctx->grid_win = newwin(world_dimensions.y + 3, 10, 0, 0);
+  } else {
+    ctx->grid_win =
+        newwin(world_dimensions.y + 3, world_dimensions.x + 2, 0, 0);
+  }
   if (ctx->grid_win == NULL) {
     return FALSE;
   }
