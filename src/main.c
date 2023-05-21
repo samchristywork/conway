@@ -279,8 +279,10 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions,
 
     if (num_alive(&world) > max_alive) {
       max_alive = num_alive(&world);
-      printf("New max alive: %d\n", max_alive);
-      world_print_term(&ctx, &world);
+      if (ctx.renderer == RENDERER_NONE) {
+        printf("New max alive: %d\n", max_alive);
+        world_print_term(&ctx, &world);
+      }
     }
 
     if (world_full(&seed)) {
@@ -350,7 +352,7 @@ int main(int argc, char *argv[]) {
       ctx.renderer = RENDERER_SDL;
     } else if (strcmp(get_value('r'), "none") == 0) {
       ctx.renderer = RENDERER_NONE;
-    }else if (strcmp(get_value('r'), "term") == 0) {
+    } else if (strcmp(get_value('r'), "term") == 0) {
       ctx.renderer = RENDERER_TERM;
     } else {
       fprintf(stderr, "Invalid renderer: %s\n", get_value('r'));
