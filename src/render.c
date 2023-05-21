@@ -52,11 +52,9 @@ void world_print_ncurses(struct Context *ctx, struct World *world) {
   mvwaddch(ctx->grid_win, 0, dimensions.x + 1, ACS_URCORNER);
   mvwaddch(ctx->grid_win, dimensions.y + 1, dimensions.x + 1, ACS_LRCORNER);
 
-  static int frame = 0;
   char buf[100];
-  sprintf(buf, "Frame: %d", frame);
+  sprintf(buf, "Frame: %d", ctx->frame);
   mvwaddstr(ctx->grid_win, dimensions.y + 2, 1, buf);
-  frame++;
 
   for (int y = 0; y < dimensions.y; y++) {
     for (int x = 0; x < dimensions.x; x++) {

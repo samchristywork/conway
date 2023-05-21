@@ -30,6 +30,7 @@ struct Context {
   char cell_dead;
   int frame_delay;
   int renderer;
+  int frame;
 };
 
 struct Renderer {
