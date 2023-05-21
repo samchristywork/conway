@@ -214,6 +214,37 @@ int num_alive(struct World *world) {
   return sum;
 }
 
+void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
+  struct World world;
+  world_init(&world, world_dimensions);
+
+  struct World seed;
+  world_init(&seed, world_dimensions);
+  world_blank_seed(&seed);
+
+  int running = TRUE;
+  while (running) {
+    world_copy(&world, &seed);
+    ctx.frame=0;
+
+    for(int i=0;i<10;i++){
+      world_simulate_step(&world);
+      usleep(ctx.frame_delay * 1000);
+      ctx.frame++;
+    }
+
+    if (world_full(&seed)) {
+      running = FALSE;
+    }
+
+    world_increment_seed(&seed);
+  }
+
+  if (renderer->cleanup_function != NULL) {
+    renderer->cleanup_function(&ctx, &world);
+  }
+}
+
 int main(int argc, char *argv[]) {
   ctx.cell_alive = 'O';
   ctx.cell_dead = ' ';
