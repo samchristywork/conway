@@ -2,8 +2,8 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <time.h>
+#include <unistd.h>
 
 #include <command_line.h>
 #include <main.h>
@@ -215,7 +215,8 @@ int num_alive(struct World *world) {
   return sum;
 }
 
-void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
+void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions,
+                    int seed_type) {
   struct World world;
   world_init(&world, world_dimensions);
 
@@ -228,11 +229,22 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
 
   struct World seed;
   world_init(&seed, world_dimensions);
-  world_blank_seed(&seed);
 
-  int num_worlds=0;
-  int num_empty=0;
-  int max_alive=0;
+  switch (seed_type) {
+  case SEED_BLANK:
+    world_blank_seed(&seed);
+    break;
+  case SEED_RANDOM:
+    world_random_seed(&seed, 0.5);
+    break;
+  default:
+    fprintf(stderr, "Invalid seed type.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  int num_worlds = 0;
+  int num_empty = 0;
+  int max_alive = 0;
 
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC_RAW, &start);
@@ -240,9 +252,9 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
   int running = TRUE;
   while (running) {
     world_copy(&world, &seed);
-    ctx.frame=0;
+    ctx.frame = 0;
 
-    for(int i=0;i<10;i++){
+    for (int i = 0; i < 10; i++) {
       if (renderer->event_handler_function != NULL) {
         if (renderer->event_handler_function() == FALSE) {
           running = FALSE;

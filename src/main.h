@@ -10,6 +10,11 @@ enum RendererType {
   RENDERER_TERM,
 };
 
+enum SeedType {
+  SEED_BLANK = 0,
+  SEED_RANDOM,
+};
+
 struct Vec2i {
   int x;
   int y;
