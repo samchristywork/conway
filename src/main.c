@@ -218,6 +218,13 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
   struct World world;
   world_init(&world, world_dimensions);
 
+  if (renderer->init_function != NULL) {
+    if (renderer->init_function(&ctx, &world, world_dimensions) == FALSE) {
+      fprintf(stderr, "Failed to initialize renderer.\n");
+      exit(EXIT_FAILURE);
+    }
+  }
+
   struct World seed;
   world_init(&seed, world_dimensions);
   world_blank_seed(&seed);
@@ -228,6 +235,17 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
     ctx.frame=0;
 
     for(int i=0;i<10;i++){
+      if (renderer->event_handler_function != NULL) {
+        if (renderer->event_handler_function() == FALSE) {
+          running = FALSE;
+          break;
+        }
+      }
+
+      if (renderer->draw_function != NULL) {
+        renderer->draw_function(&ctx, &world);
+      }
+
       world_simulate_step(&world);
       usleep(ctx.frame_delay * 1000);
       ctx.frame++;
