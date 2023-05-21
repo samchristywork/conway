@@ -309,11 +309,6 @@ int main(int argc, char *argv[]) {
     world_dimensions.y = 30;
   }
 
-  struct World world;
-  world_init(&world, world_dimensions);
-
-  world_random_seed(&world, .5);
-
   struct Renderer *renderer = malloc(sizeof(struct Renderer));
   bzero(renderer, sizeof(struct Renderer));
 
@@ -329,12 +324,17 @@ int main(int argc, char *argv[]) {
       break;
   }
 
+  struct World world;
+  world_init(&world, world_dimensions);
+
   if (renderer->init_function != NULL) {
     if (renderer->init_function(&ctx, &world, world_dimensions) == FALSE) {
       fprintf(stderr, "Failed to initialize renderer.\n");
       exit(EXIT_FAILURE);
     }
   }
+
+  world_random_seed(&world, .5);
 
   while (true) {
     if (renderer->event_handler_function != NULL) {
@@ -348,6 +348,7 @@ int main(int argc, char *argv[]) {
     }
     world_simulate_step(&world);
     usleep(ctx.frame_delay * 1000);
+    ctx.frame++;
   }
 
   if (renderer->cleanup_function != NULL) {
