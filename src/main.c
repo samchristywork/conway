@@ -232,6 +232,7 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
 
   int num_worlds=0;
   int num_empty=0;
+  int max_alive=0;
 
   struct timespec start, end;
   clock_gettime(CLOCK_MONOTONIC_RAW, &start);
@@ -264,6 +265,12 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
 
     num_worlds++;
 
+    if (num_alive(&world) > max_alive) {
+      max_alive = num_alive(&world);
+      printf("New max alive: %d\n", max_alive);
+      world_print_term(&ctx, &world);
+    }
+
     if (world_full(&seed)) {
       running = FALSE;
     }
@@ -274,6 +281,7 @@ void run_experiment(struct Renderer *renderer, struct Vec2i world_dimensions) {
   clock_gettime(CLOCK_MONOTONIC_RAW, &end);
 
   printf("Ran %d worlds, %d were empty\n", num_worlds, num_empty);
+  printf("Max alive: %d\n", max_alive);
   printf("Took %f seconds\n", (end.tv_sec - start.tv_sec) + (end.tv_nsec - start.tv_nsec) / 1000000000.0);
 
   if (renderer->cleanup_function != NULL) {
