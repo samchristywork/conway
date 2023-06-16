@@ -13,7 +13,6 @@
 ## Usage
 
 ```
-make: Nothing to be done for 'all'.
 Usage:
   -a,--alive-cell        The character to use for living cells (default 'o').
   -d,--dead-cell         The character to use for dead cells (default ' ').
