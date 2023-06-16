@@ -13,6 +13,16 @@
 ## Usage
 
 ```
+make: Nothing to be done for 'all'.
+Usage:
+  -a,--alive-cell        The character to use for living cells (default 'o').
+  -d,--dead-cell         The character to use for dead cells (default ' ').
+  -f,--frame-delay       The delay between frames in milliseconds (default 100).
+  -h,--help              Display Usage statement.
+  -l,--loop              Simulation should restart when complete.
+  -r,--renderer          The renderer to use.
+  -x,--width             The width of the world (default 30).
+  -y,--height            The height of the world (default 30).
 ```
 
 ## Dependencies
