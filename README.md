@@ -28,6 +28,9 @@ Usage:
 ## Dependencies
 
 ```
+gcc
+make
+ncurses-dev
 ```
 
 ## License
