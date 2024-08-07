@@ -58,5 +58,22 @@ impl Grid {
     }
 }
 
+#[derive(Clone, Debug)]
+struct State {
+    generation: usize,
+    grid: Grid,
+}
+
+impl State {
+    fn new(generation: usize, grid: Grid) -> Self {
+        State { generation, grid }
+    }
+
+    fn print(&self) {
+        println!("Generation: {}", self.generation);
+        self.grid.print();
+    }
+}
+
 fn main() {
 }
