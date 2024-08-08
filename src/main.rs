@@ -108,6 +108,40 @@ impl Game {
         self.current_state = State::new(0, Grid::new(self.width, self.height));
     }
 
+    fn update(&mut self) {
+        let mut new_grid_data = self.current_state.grid.data.clone();
+
+        for i in 0..self.height {
+            for j in 0..self.width {
+                let alive_neighbors = self.current_state.grid.count_alive_neighbors(i, j);
+                if self.current_state.grid.data[i][j] {
+                    new_grid_data[i][j] = alive_neighbors == 2 || alive_neighbors == 3;
+                } else {
+                    new_grid_data[i][j] = alive_neighbors == 3;
+                }
+            }
+        }
+
+        self.current_state.grid.data = new_grid_data;
+        self.current_state.generation += 1;
+    }
+
+    fn tick(&mut self) -> Option<usize> {
+        self.update();
+
+        let current_generation = self.current_state.generation;
+
+        for state in &self.previous_states {
+            if state.grid == self.current_state.grid {
+                return Some(state.generation);
+            }
+        }
+
+        self.previous_states.push(self.current_state.clone());
+
+        None
+    }
+
     fn is_empty(&self) -> bool {
         self.current_state.grid.is_empty()
     }
