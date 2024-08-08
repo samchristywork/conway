@@ -75,5 +75,43 @@ impl State {
     }
 }
 
+struct Game {
+    previous_states: Vec<State>,
+    width: usize,
+    height: usize,
+    current_state: State,
+}
+
+impl Game {
+    fn new(width: usize, height: usize) -> Self {
+        let initial_grid = Grid::new(width, height);
+        Game {
+            previous_states: Vec::new(),
+            width,
+            height,
+            current_state: State::new(0, initial_grid),
+        }
+    }
+
+    fn new_random(width: usize, height: usize) -> Self {
+        let mut game = Game::new(width, height);
+        game.randomize();
+        game
+    }
+
+    fn randomize(&mut self) {
+        self.current_state.grid.randomize();
+    }
+
+    fn reset(&mut self) {
+        self.previous_states.clear();
+        self.current_state = State::new(0, Grid::new(self.width, self.height));
+    }
+
+    fn is_empty(&self) -> bool {
+        self.current_state.grid.is_empty()
+    }
+}
+
 fn main() {
 }
