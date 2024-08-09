@@ -142,9 +142,50 @@ impl Game {
         None
     }
 
+    fn display(&self) {
+        println!("\x1B[2J\x1B[1;1H");
+        self.current_state.print();
+    }
+
+    fn revert_to(&mut self, generation: usize) {
+        if let Some(state) = self.previous_states.iter().find(|s| s.generation == generation).cloned() {
+            self.current_state = state;
+        }
+    }
+
+    fn revert_to_initial(&mut self) {
+        if let Some(initial_state) = self.previous_states.first() {
+            self.current_state = initial_state.clone();
+        }
+    }
+
     fn is_empty(&self) -> bool {
         self.current_state.grid.is_empty()
     }
+
+    fn run_until_loop(&mut self, max_generation: usize) -> Option<usize> {
+        for _ in 0..max_generation {
+            if let Some(cycle_start_generation) = self.tick() {
+                return Some(cycle_start_generation);
+            }
+        }
+        None
+    }
+
+    fn print_range(&self, start: usize, end: usize) {
+        for generation in start..end {
+            if let Some(state) = self.previous_states.iter().find(|s| s.generation == generation) {
+                state.print();
+            } else {
+                println!("Generation {} not found.", generation);
+            }
+
+        }
+    }
+}
+
+fn sleep_millis(n: u64) {
+    std::thread::sleep(std::time::Duration::from_millis(n));
 }
 
 fn main() {
