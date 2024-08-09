@@ -189,4 +189,26 @@ fn sleep_millis(n: u64) {
 }
 
 fn main() {
+    let max_generation = 1000;
+
+    let mut game_state = Game::new(20, 20);
+    loop {
+        game_state.reset();
+        game_state.randomize();
+        match game_state.run_until_loop(max_generation) {
+            Some(cycle_start_generation) => {
+                let loop_length = game_state.current_state.generation - cycle_start_generation;
+                if loop_length > 5 {
+                    game_state.revert_to_initial();
+                    loop {
+                        game_state.display();
+                        println!("Loop length: {}", loop_length);
+                        sleep_millis(10);
+                        game_state.tick();
+                    }
+                }
+            }
+            None => {}
+        }
+    }
 }
