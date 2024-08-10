@@ -154,9 +154,7 @@ impl Game {
     }
 
     fn revert_to_initial(&mut self) {
-        if let Some(initial_state) = self.previous_states.first() {
-            self.current_state = initial_state.clone();
-        }
+        self.revert_to(0);
     }
 
     fn is_empty(&self) -> bool {
