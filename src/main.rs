@@ -1,5 +1,4 @@
-use std::collections::hash_map::DefaultHasher;
-use std::hash::{Hash, Hasher};
+use std::hash::Hash;
 use rand::random;
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
@@ -93,12 +92,6 @@ impl Game {
         }
     }
 
-    fn new_random(width: usize, height: usize) -> Self {
-        let mut game = Game::new(width, height);
-        game.randomize();
-        game
-    }
-
     fn randomize(&mut self) {
         self.current_state.grid.randomize();
     }
@@ -128,8 +121,6 @@ impl Game {
 
     fn tick(&mut self) -> Option<usize> {
         self.update();
-
-        let current_generation = self.current_state.generation;
 
         for state in &self.previous_states {
             if state.grid == self.current_state.grid {
@@ -168,17 +159,6 @@ impl Game {
             }
         }
         None
-    }
-
-    fn print_range(&self, start: usize, end: usize) {
-        for generation in start..end {
-            if let Some(state) = self.previous_states.iter().find(|s| s.generation == generation) {
-                state.print();
-            } else {
-                println!("Generation {} not found.", generation);
-            }
-
-        }
     }
 }
 
