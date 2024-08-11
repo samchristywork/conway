@@ -8,7 +8,7 @@ struct Grid {
 
 impl Grid {
     fn new(width: usize, height: usize) -> Self {
-        Grid {
+        Self {
             data: vec![vec![false; width]; height],
         }
     }
@@ -64,8 +64,8 @@ struct State {
 }
 
 impl State {
-    fn new(generation: usize, grid: Grid) -> Self {
-        State { generation, grid }
+    const fn new(generation: usize, grid: Grid) -> Self {
+        Self { generation, grid }
     }
 
     fn print(&self) {
@@ -84,7 +84,7 @@ struct Game {
 impl Game {
     fn new(width: usize, height: usize) -> Self {
         let initial_grid = Grid::new(width, height);
-        Game {
+        Self {
             previous_states: Vec::new(),
             width,
             height,
