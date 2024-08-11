@@ -176,7 +176,7 @@ fn main() {
         match game_state.run_until_loop(max_generation) {
             Some(cycle_start_generation) => {
                 let loop_length = game_state.current_state.generation - cycle_start_generation;
-                if loop_length > 5 {
+                if !game_state.is_empty() && loop_length > 5 {
                     game_state.revert_to_initial();
                     loop {
                         game_state.display();
