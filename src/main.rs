@@ -31,18 +31,33 @@ impl Grid {
         println!();
     }
 
+    // TODO: Rework casting in this function
+    fn compute_index(index: usize, offset: isize, max: usize) -> Option<usize> {
+        let Ok(idx): Result<isize, _> = index.try_into() else { return None };
+        let Ok(m): Result<isize, _> = max.try_into() else { return None };
+
+        let new_index = (idx + offset).rem_euclid(m);
+        if new_index < 0 {
+            None
+        } else {
+            let Ok(new_index_usize): Result<usize, _> = new_index.try_into() else { return None };
+            Some(new_index_usize)
+        }
+    }
+
     fn count_alive_neighbors(&self, x: usize, y: usize) -> usize {
         let height = self.data.len();
         let width = self.data[0].len();
         let mut count = 0;
+
         for i in -1..=1 {
             for j in -1..=1 {
                 if i == 0 && j == 0 {
                     continue;
                 }
 
-                let new_x = (x as isize + i).rem_euclid(height as isize) as usize;
-                let new_y = (y as isize + j).rem_euclid(width as isize) as usize;
+                let Some(new_x) = Self::compute_index(x, i, height) else { continue };
+                let Some(new_y) = Self::compute_index(y, j, width) else { continue };
 
                 if self.data[new_x][new_y] {
                     count += 1;
