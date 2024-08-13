@@ -119,10 +119,10 @@ impl Game {
     fn update(&mut self) {
         let mut new_grid_data = self.current_state.grid.data.clone();
 
-        for i in 0..self.height {
-            for j in 0..self.width {
+        for (i, row) in self.current_state.grid.data.iter().enumerate() {
+            for (j, &cell) in row.iter().enumerate() {
                 let alive_neighbors = self.current_state.grid.count_alive_neighbors(i, j);
-                if self.current_state.grid.data[i][j] {
+                if cell {
                     new_grid_data[i][j] = alive_neighbors == 2 || alive_neighbors == 3;
                 } else {
                     new_grid_data[i][j] = alive_neighbors == 3;
