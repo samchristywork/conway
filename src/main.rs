@@ -188,20 +188,17 @@ fn main() {
     loop {
         game_state.reset();
         game_state.randomize();
-        match game_state.run_until_loop(max_generation) {
-            Some(cycle_start_generation) => {
-                let loop_length = game_state.current_state.generation - cycle_start_generation;
-                if !game_state.is_empty() && loop_length > 5 {
-                    game_state.revert_to_initial();
-                    loop {
-                        game_state.display();
-                        println!("Loop length: {}", loop_length);
-                        sleep_millis(10);
-                        game_state.tick();
-                    }
+        if let Some(cycle_start_generation) = game_state.run_until_loop(max_generation) {
+            let loop_length = game_state.current_state.generation - cycle_start_generation;
+            if !game_state.is_empty() && loop_length > 5 {
+                game_state.revert_to_initial();
+                loop {
+                    game_state.display();
+                    println!("Loop length: {loop_length}");
+                    sleep_millis(10);
+                    game_state.tick();
                 }
             }
-            None => {}
         }
     }
 }
