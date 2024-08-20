@@ -196,17 +196,34 @@ fn sleep_millis(n: u64) {
     std::thread::sleep(std::time::Duration::from_millis(n));
 }
 
+fn alternate_screen() {
+    print!("\x1B[?1049h");
+}
+
+fn normal_screen() {
+    print!("\x1B[?1049l");
+}
+
 fn main() {
     let max_generation = 1000;
 
-    let mut game_state = Game::new(20, 20);
+    let w = 20;
+    let h = 20;
+    let mut game_state = Game::new(w, h);
+    let mut attempts = 0;
+
+    println!("Initialized game state with grid size {w}x{h}");
     loop {
         game_state.reset();
         game_state.randomize();
+        print!("\rAttempt: {attempts}");
+        attempts += 1;
         if let Some(cycle_start_generation) = game_state.run_until_loop(max_generation) {
             let loop_length = game_state.current_state.generation - cycle_start_generation;
             if !game_state.is_empty() && loop_length > 5 {
                 game_state.revert_to_initial();
+                println!("\nCondition met on attempt {attempts} with loop length {loop_length}");
+                alternate_screen();
                 loop {
                     game_state.display();
                     println!("Loop length: {loop_length}");
