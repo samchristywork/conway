@@ -212,6 +212,12 @@ fn main() {
     let mut game_state = Game::new(w, h);
     let mut attempts = 0;
 
+    let _ = ctrlc::set_handler(move || {
+        normal_screen();
+        println!("Exiting...");
+        std::process::exit(0);
+    });
+
     println!("Initialized game state with grid size {w}x{h}");
     loop {
         game_state.reset();
@@ -227,6 +233,7 @@ fn main() {
                 loop {
                     game_state.display();
                     println!("Loop length: {loop_length}");
+                    println!("Press Ctrl+C to exit.");
                     sleep_millis(10);
                     game_state.tick();
                 }
