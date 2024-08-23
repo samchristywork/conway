@@ -1,5 +1,6 @@
 use rand::random;
 use std::hash::Hash;
+use std::io::Write;
 
 #[derive(Clone, PartialEq, Eq, Hash, Debug)]
 struct Grid {
@@ -196,12 +197,18 @@ fn sleep_millis(n: u64) {
     std::thread::sleep(std::time::Duration::from_millis(n));
 }
 
+fn flush() {
+    std::io::stdout().flush().unwrap();
+}
+
 fn alternate_screen() {
     print!("\x1B[?1049h");
+    flush();
 }
 
 fn normal_screen() {
     print!("\x1B[?1049l");
+    flush();
 }
 
 fn main() {
@@ -223,6 +230,7 @@ fn main() {
         game_state.reset();
         game_state.randomize();
         print!("\rAttempt: {attempts}");
+        flush();
         attempts += 1;
         if let Some(cycle_start_generation) = game_state.run_until_loop(max_generation) {
             let loop_length = game_state.current_state.generation - cycle_start_generation;
