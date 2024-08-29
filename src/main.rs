@@ -198,7 +198,7 @@ fn sleep_millis(n: u64) {
 }
 
 fn flush() {
-    std::io::stdout().flush().unwrap();
+    std::io::stdout().flush().expect("Failed to flush stdout");
 }
 
 fn alternate_screen() {
