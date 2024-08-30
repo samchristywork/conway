@@ -1,3 +1,5 @@
+use clap::Command;
+use clap::arg;
 use rand::random;
 use std::hash::Hash;
 use std::io::Write;
@@ -212,10 +214,38 @@ fn normal_screen() {
 }
 
 fn main() {
-    let max_generation = 1000;
+    let matches = Command::new("Game of Life")
+        .version("0.1")
+        .author("Sam Christy")
+        .about("Search for loops in Conway's Game of Life")
+        .arg(arg!(--width <WIDTH> "Width of the grid").default_value("10"))
+        .arg(arg!(--height <HEIGHT> "Height of the grid").default_value("10"))
+        .arg(arg!(--max <MAX> "Maximum number of generations to run").default_value("1000"))
+        .arg(arg!(--min <MIN_LOOP_LENGTH> "Minimum loop length to consider").default_value("5"))
+        .arg(arg!(--delay <DELAY> "Delay between generations in milliseconds").default_value("100"))
+        .get_matches();
 
-    let w = 20;
-    let h = 20;
+    let w = matches
+        .get_one::<String>("width")
+        .map(|s| s.parse::<usize>().unwrap())
+        .unwrap_or(10);
+    let h = matches
+        .get_one::<String>("height")
+        .map(|s| s.parse::<usize>().unwrap())
+        .unwrap_or(10);
+    let max_generation = matches
+        .get_one::<String>("max")
+        .map(|s| s.parse::<usize>().unwrap())
+        .unwrap_or(1000);
+    let min_loop_length = matches
+        .get_one::<String>("min")
+        .map(|s| s.parse::<usize>().unwrap())
+        .unwrap_or(5);
+    let delay = matches
+        .get_one::<String>("delay")
+        .map(|s| s.parse::<u64>().unwrap())
+        .unwrap_or(100);
+
     let mut game_state = Game::new(w, h);
     let mut attempts = 0;
 
@@ -234,7 +264,7 @@ fn main() {
         attempts += 1;
         if let Some(cycle_start_generation) = game_state.run_until_loop(max_generation) {
             let loop_length = game_state.current_state.generation - cycle_start_generation;
-            if !game_state.is_empty() && loop_length > 5 {
+            if !game_state.is_empty() && loop_length > min_loop_length {
                 game_state.revert_to_initial();
                 println!("\nCondition met on attempt {attempts} with loop length {loop_length}");
                 alternate_screen();
@@ -242,7 +272,7 @@ fn main() {
                     game_state.display();
                     println!("Loop length: {loop_length}");
                     println!("Press Ctrl+C to exit.");
-                    sleep_millis(10);
+                    sleep_millis(delay);
                     game_state.tick();
                 }
             }
