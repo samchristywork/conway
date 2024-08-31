@@ -25,12 +25,28 @@ impl Grid {
     }
 
     fn print(&self) {
+        let rows = self.data.len();
+        let cols = if rows > 0 { self.data[0].len() } else { 0 };
+
+        print!("┌");
+        for _ in 0..cols {
+            print!("─");
+        }
+        println!("┐");
+
         for row in &self.data {
+            print!("│");
             for &cell in row {
                 print!("{}", if cell { "█" } else { " " });
             }
-            println!();
+            println!("│");
         }
+
+        print!("└");
+        for _ in 0..cols {
+            print!("─");
+        }
+        println!("┘");
         println!();
     }
 
@@ -178,7 +194,9 @@ impl Game {
     }
 
     fn revert_to_initial(&mut self) {
-        self.revert_to(0);
+        if let Some(initial_state) = self.previous_states.first() {
+            self.current_state = initial_state.clone();
+        }
     }
 
     fn is_empty(&self) -> bool {
